@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pedido do Cliente</title>
+
 <style>
 body{font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;margin:0;padding:20px}
 .container{max-width:760px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 10px rgba(0,0,0,.1)}
@@ -11,11 +12,11 @@ h1{text-align:center}
 label{font-weight:bold}
 input,textarea,select,button{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;font-size:14px}
 button{cursor:pointer;background:#25D366;color:#fff;border:none;font-weight:bold}
-button:hover{opacity:.9}
 .small{font-size:12px;color:#666}
 .erro{color:#c62828;font-size:13px;margin-top:-4px;margin-bottom:8px;display:none}
 </style>
 </head>
+
 <body>
 <div class="container">
 <h1>Monte seu Pedido</h1>
@@ -25,33 +26,32 @@ button:hover{opacity:.9}
 
 <label>Produto desejado</label>
 <select id="produto">
-    <option>Mini mala</option>
-<option>Mala G</option>
-<option>Mala M</option>
-<option>Nécessaire</option>
-<option>Nécessaire Box</option>
-<option>Estojo sim</option>
-<option>Estojo Escolar</option>
-<option>Retangular 2 alças</option>
-<option>Retangular 1 alça lateral</option>
-<option>Retangular vertical</option>
-<option>Frasqueira</option>
-<option>Shoulderbag</option>
-<option>Ecobag G</option>
-<option>Ecobag simples</option>
-<option>Mochila Pet P</option>
-<option>Mochila Pet M</option>
-<option>Mochila Pet G</option>
-<option>Retangular cristal</option>
-<option>Retangular com visor</option>
-<option>Mochila festa P</option>
-<option>Mochila festa M</option>
-<option>Mochila festa G</option>
-<option>Mascote</option>
-<option>Convite virtual</option>
-<option>Papelaria Personalizada</option>
-<option>Adesivos</option>
-
+  <option>Mini mala</option>
+  <option>Mala G</option>
+  <option>Mala M</option>
+  <option>Nécessaire</option>
+  <option>Nécessaire Box</option>
+  <option>Estojo sim</option>
+  <option>Estojo Escolar</option>
+  <option>Retangular 2 alças</option>
+  <option>Retangular 1 alça lateral</option>
+  <option>Retangular vertical</option>
+  <option>Frasqueira</option>
+  <option>Shoulderbag</option>
+  <option>Ecobag G</option>
+  <option>Ecobag simples</option>
+  <option>Mochila Pet P</option>
+  <option>Mochila Pet M</option>
+  <option>Mochila Pet G</option>
+  <option>Retangular cristal</option>
+  <option>Retangular com visor</option>
+  <option>Mochila festa P</option>
+  <option>Mochila festa M</option>
+  <option>Mochila festa G</option>
+  <option>Mascote</option>
+  <option>Convite virtual</option>
+  <option>Papelaria Personalizada</option>
+  <option>Adesivos</option>
 </select>
 
 <label>Quantidade</label>
@@ -63,79 +63,40 @@ button:hover{opacity:.9}
 <label>Prazo do evento</label>
 <input id="prazo" type="date" />
 <p class="small">Somente datas a partir de 20 dias úteis.</p>
-<p id="erroData" class="erro">A data escolhida é menor que 20 dias úteis. Selecione outra.</p>
+<p id="erroData" class="erro">A data escolhida é menor que 20 dias úteis.</p>
 
 <label>Observações</label>
-<textarea id="obs" rows="3" placeholder="Detalhes importantes..."></textarea>
+<textarea id="obs" rows="3"></textarea>
 
-<button id="btnEnviar">Enviar Pedido no WhatsApp</button>
-
-<p class="small">Ao clicar, seu pedido será enviado direto para o atendimento.</p>
+<button onclick="enviarPedido()">Enviar Pedido no WhatsApp</button>
 </div>
 
 <script>
 const numeroLoja = '5511991157032';
-let DATA_MINIMA = null;
 
-function adicionarDiasUteis(dataBase, dias) {
-  const data = new Date(dataBase.getTime());
+function adicionarDiasUteis(data, dias){
   let count = 0;
-  while (count < dias) {
-    data.setDate(data.getDate() + 1);
-    const diaSemana = data.getDay();
-    if (diaSemana !== 0 && diaSemana !== 6) count++;
+  while(count < dias){
+    data.setDate(data.getDate()+1);
+    if(data.getDay()!=0 && data.getDay()!=6) count++;
   }
   return data;
 }
 
-function formatarDataISO(data){
-  const ano = data.getFullYear();
-  const mes = String(data.getMonth() + 1).padStart(2, '0');
-  const dia = String(data.getDate()).padStart(2, '0');
-  return `${ano}-${mes}-${dia}`;
-}
-
-function validarData(){
-  const campoData = document.getElementById('prazo');
-  const erro = document.getElementById('erroData');
-
-  if(!campoData.value) return false;
-
-  const escolhida = new Date(campoData.value + 'T00:00:00');
-  escolhida.setHours(0,0,0,0);
-
-  if (escolhida < DATA_MINIMA) {
-    erro.style.display = 'block';
-    campoData.value = '';
-    return false;
-  }
-
-  erro.style.display = 'none';
-  return true;
-}
-
-window.addEventListener('load', function(){
+window.onload = function(){
   const hoje = new Date();
-  DATA_MINIMA = adicionarDiasUteis(hoje, 20);
-
-  const campoData = document.getElementById('prazo');
-  campoData.min = formatarDataISO(DATA_MINIMA);
-
-  campoData.addEventListener('change', validarData);
-});
+  const min = adicionarDiasUteis(hoje,20);
+  const campo = document.getElementById('prazo');
+  campo.min = min.toISOString().split('T')[0];
+}
 
 function enviarPedido(){
-  const nome=document.getElementById('nome').value;
-  const produto=document.getElementById('produto').value;
-  const quantidade=document.getElementById('quantidade').value;
-  const tema=document.getElementById('tema').value;
-  const prazo=document.getElementById('prazo').value;
-  const obs=document.getElementById('obs').value;
-
-  if(!validarData()){
-    alert('Selecione uma data válida (mínimo 20 dias úteis).');
-    return;
-  }
+  const nome = nome.value;
+  const produto = produto.value;
+  const quantidade = quantidade.value;
+  const tema = tema.value;
+  const prazo = prazo.value;
+  const obs = obs.value;
 
   const msg = `Olá! Já escolhi os detalhes do meu personalizado e gostaria de finalizar meu pedido:
 
@@ -146,11 +107,8 @@ Tema/Estampa: ${tema}
 Prazo do evento: ${prazo}
 Observações: ${obs}`;
 
-  const url = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
+  window.open(`https://wa.me/${numeroLoja}?text=${encodeURIComponent(msg)}`);
 }
-
-document.getElementById('btnEnviar').addEventListener('click', enviarPedido);
 </script>
 </body>
 </html>
